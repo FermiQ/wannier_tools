@@ -24,7 +24,7 @@
     <script type="text/javascript" src="static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2.4. Symmetrization of wannier90_hr.dat New" href="symmetrization.html" />
+    <link rel="next" title="2.4. Symmetrization of wannier90_hr.dat New usesful for ir2tb" href="symmetrization.html" />
     <link rel="prev" title="2.2. Introduction of input files" href="input.html" /> 
   </head>
   <body>
@@ -32,7 +32,7 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="symmetrization.html" title="2.4. Symmetrization of wannier90_hr.dat New"
+          <a href="symmetrization.html" title="2.4. Symmetrization of wannier90_hr.dat New usesful for ir2tb"
              accesskey="N">next</a></li>
         <li class="right" >
           <a href="input.html" title="2.2. Introduction of input files"
@@ -53,7 +53,7 @@
 <li><a class="reference internal" href="#bulkbandcalculation"><span class="std std-ref">Bulk band calculation (points mode, line mode and plane mode)</span></a></li>
 <li><a class="reference internal" href="#bulkfscalculation"><span class="std std-ref">BulkFS calculation</span></a></li>
 <li><a class="reference internal" href="#bulkfsplanecalculation"><span class="std std-ref">BulkFS plane calculation</span></a></li>
-<li><a class="reference internal" href="#bulkspintexturecalculation"><span class="std std-ref">Bulk spin texture calculations</span></a> <strong>New</strong></li>
+<li><a class="reference internal" href="#bulkspintexturecalculation"><span class="std std-ref">Bulk spin texture calculations</span></a></li>
 <li><a class="reference internal" href="#doscalculation"><span class="std std-ref">Density state(DOS) calculations</span></a></li>
 <li><a class="reference internal" href="#findnodescalculation"><span class="std std-ref">Find Nodes calculation</span></a></li>
 <li><a class="reference internal" href="#energygapcalculation"><span class="std std-ref">Energy gap calculations (plane and cube mode)</span></a></li>
@@ -65,7 +65,7 @@
 <li><a class="reference internal" href="#spintexturecalculation"><span class="std std-ref">Spin texture calculation</span></a></li>
 <li><a class="reference internal" href="#berryphasecalculation"><span class="std std-ref">Berry phase calculation</span></a></li>
 <li><a class="reference internal" href="#berrycurvcalculation"><span class="std std-ref">Berry curvature calculation for 3D bulk case</span></a></li>
-<li><a class="reference internal" href="#berrycurvcalculationslab"><span class="std std-ref">Berry curvature calculation for slab system</span></a> <strong>New</strong></li>
+<li><a class="reference internal" href="#berrycurvcalculationslab"><span class="std std-ref">Berry curvature calculation for slab system</span></a></li>
 <li><a class="reference internal" href="#ahccalculation"><span class="std std-ref">Anomalous Hall conductivity (AHC)</span></a></li>
 <li><a class="reference internal" href="#wanniercentercalculation"><span class="std std-ref">Wannier charge center/Wilson loop calculation</span></a></li>
 <li><a class="reference internal" href="#z2bulkcalculation"><span class="std std-ref">Z2 number for 3D bulk materials</span></a></li>
@@ -73,6 +73,7 @@
 <li><a class="reference internal" href="#mirrorchernnumbercalculation"><span class="std std-ref">Mirror Chern number calculation</span></a> <strong>New</strong></li>
 <li><a class="reference internal" href="#weylchiralitycalculation"><span class="std std-ref">Weyl Chirality calculation</span></a></li>
 <li><a class="reference internal" href="#landaulevel"><span class="std std-ref">Landau level calculations</span></a></li>
+<li><a class="reference internal" href="#magnetoresistancecalculation"><span class="std std-ref">Ordinary magnetoresistance calculations</span></a> <strong>New</strong></li>
 </ul>
 <div class="section" id="bulk-band-calculation-points-mode-line-mode-and-plane-mode">
 <span id="bulkbandcalculation"></span><h2>2.3.1. Bulk band calculation (points mode, line mode and plane mode)<a class="headerlink" href="#bulk-band-calculation-points-mode-line-mode-and-plane-mode" title="Permalink to this headline">¶</a></h2>
@@ -1061,6 +1062,80 @@ will call the sparse matrix solver.</p>
 <p>The magnetic field is along the first vector specified in the SURFACE card.</p>
 <a class="reference internal image-reference" href="images/WannierTools-landaulevel.png"><img alt="images/WannierTools-landaulevel.png" src="images/WannierTools-landaulevel.png" style="width: 1152.0px; height: 648.0px;" /></a>
 </div>
+<div class="section" id="ordinary-magnetoresistance-calculations">
+<span id="magnetoresistancecalculation"></span><h2>2.3.24. Ordinary magnetoresistance calculations<a class="headerlink" href="#ordinary-magnetoresistance-calculations" title="Permalink to this headline">¶</a></h2>
+<p>After version 2.6.0, WannierTools is able to calculate magnetoresistance
+of a non-magnetic metal or semimetal which has Fermi surfaces. The theory part was described in Phys. Rev. B 99, 035142 (2019).</p>
+<p>With control tag <strong>Boltz_OHE_calc=T</strong> and <strong>Symmetry_Import_calc = T</strong>, we can get the conductivity tensor
+for a given magnetic direction specified by <strong>Btheta</strong> and <strong>Bphi</strong>.</p>
+<p>Here we put one example of Cu. The input file wt.in is like this</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&amp;TB_FILE
+Hrfile = &#39;wannier90_hr.dat_nsymm48&#39;   ! Here we symmetrized the TB model
+/
+
+&amp;CONTROL
+Boltz_OHE_calc        = T   ! calculate ordinary magnetoresistance
+Symmetry_Import_calc  = T ! please set it to be true for magnetoresistance calculation
+/
+
+&amp;SYSTEM
+SOC = 0                ! There is no SOC in the hr file : SOC=0; with soc : SOC=1
+E_FERMI = 7.7083       ! e-fermi in eV
+Btheta= 0, Bphi= 90    ! magnetic field direction, Btheta is the angle with z axial, Bphi is the angle with respect to x axial in the x-y plane
+NumOccupied = 6        ! set it anyway even don&#39;t use it. Usually, It&#39;s the valance band maximum band index.
+/
+
+&amp;PARAMETERS
+OmegaNum = 1        ! omega number
+OmegaMin =  0.0     ! energy interval
+OmegaMax =  0.0     ! energy interval  chemical potential \mu_i=OmegaMin+ (i-1)/(OmegaNum-1)*(OmegaMax-OmegaMin)
+Nk1 =61             ! Kmesh(1) for KCUBE_BULK
+Nk2 =61             ! Kmesh(2) for KCUBE_BULK
+Nk3 =61             ! Kmesh(3) for KCUBE_BULK
+BTauNum= 100        ! Number of B*tau we calculate
+BTauMax = 40.0      ! The maximum B*tau, starting from Btau=0.
+Tmin = 30           ! Temperature in Kelvin
+Tmax = 330          ! Temperature in Kelvin
+NumT = 11           ! number temperature we calculate. T_i=Tmin+(Tmax-Tmin)/(NumT-1)*(i-1)
+/
+
+LATTICE
+Angstrom  ! Unit of length: Angstrom or Bohr
+   0.0000000   1.8075000   1.8075000
+   1.8075000   0.0000000   1.8075000
+   1.8075000   1.8075000   0.0000000
+
+ATOM_POSITIONS
+1                               ! number of atoms for projectors
+Cartisen                          ! Direct or Cartisen coordinate
+Cu    0.000000      0.000000      0.000000
+
+PROJECTORS
+9            ! number of projectors
+Cu s pz px py dz2 dxz dyz dx2-y2 dxy
+
+SELECTEDBANDS
+1
+6   ! the 6&#39;th band is crossing the Fermi level.
+
+KCUBE_BULK   ! in unit of primitive reciprocal lattice vectors.
+ 0.00  0.00  0.00   ! Original point for 3D k plane
+ 1.00  0.00  0.00   ! The first vector to define 3d k space plane
+ 0.00  1.00  0.00   ! The second vector to define 3d k space plane
+ 0.00  0.00  1.00   ! The third vector to define 3d k cube
+</pre></div>
+</div>
+<p>The above input file indicates that 1). The magnetic field is along z direction (Btheta=0).
+2). The chemical potential is set to Zero. by OmegaNum=1; OmegaMin=Omegamax=0.
+3). The temperature is set as an arrary from 30K to 330K with 30 as interval by Tmin=30; Tmax=330; NumT=11.
+4). The magnetic field strenth is set as B*tau= (0, 40) with 100 points by BTauMax=40; BTauNum=100.
+5). The k-mesh is set as 61*61*61.</p>
+<p>On output, the conductivity tensor sigma/tau as a function of B*Tau
+for each band n, each chemical potential mu and each temperature T are presented in file
+sigma_band_${n}_mu_${mu}eV_T_${T}K.dat</p>
+<p>If there are serveral band, you should write a script to add up all the conductivity tensor for all the bands, then
+take an inverse of it to get the resistivity tensor.</p>
+</div>
 </div>
 
 
@@ -1170,6 +1245,7 @@ will call the sparse matrix solver.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#landau-level-calculations">2.3.23. Landau level calculations</a></li>
+<li><a class="reference internal" href="#ordinary-magnetoresistance-calculations">2.3.24. Ordinary magnetoresistance calculations</a></li>
 </ul>
 </li>
 </ul>
@@ -1179,7 +1255,7 @@ will call the sparse matrix solver.</p>
                         title="previous chapter">2.2. Introduction of input files</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="symmetrization.html"
-                        title="next chapter">2.4. Symmetrization of wannier90_hr.dat <strong>New</strong></a></p>
+                        title="next chapter">2.4. Symmetrization of wannier90_hr.dat <strong>New</strong>  usesful for ir2tb</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -1198,7 +1274,7 @@ will call the sparse matrix solver.</p>
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="symmetrization.html" title="2.4. Symmetrization of wannier90_hr.dat New"
+          <a href="symmetrization.html" title="2.4. Symmetrization of wannier90_hr.dat New usesful for ir2tb"
              >next</a></li>
         <li class="right" >
           <a href="input.html" title="2.2. Introduction of input files"
